@@ -477,26 +477,29 @@ Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server 
     
 **Pull server client example scripts**
 Configure clients
-Configuration PullClient {
- param(
-    $ID,
-    $Server
- )
-      LocalConfigurationManager 
-               { 
-                  ConfigurationID = $ID;
-                  RefreshMode = 'PULL';
-                  DownloadManagerName = 'WebDownloadManager';
-                  RebootNodeIfNeeded = $true;
-                  RefreshFrequencyMins = 30;
-                  ConfigurationModeFrequencyMins = 15; 
-                  ConfigurationMode = 'ApplyAndAutoCorrect';
-                  DownloadManagerCustomData = @{ServerUrl = "http://"+$Server+":8080/PSDSCPullServer.svc"; AllowUnsecureConnection = $true}
-               }
-}
-PullClient -ID 'INSERTGUID' -Server 'INSERTSERVER' -Output 'C:\DSCConfig\'
-Set-DscLocalConfigurationManager -ComputerName 'Localhost' -Path 'C:\DSCConfig\' -Verbose
-Additional references, snippets, and examples
+
+    Configuration PullClient {
+     param(
+        $ID,
+        $Server
+     )
+          LocalConfigurationManager 
+                   { 
+                      ConfigurationID = $ID;
+                      RefreshMode = 'PULL';
+                      DownloadManagerName = 'WebDownloadManager';
+                      RebootNodeIfNeeded = $true;
+                      RefreshFrequencyMins = 30;
+                      ConfigurationModeFrequencyMins = 15; 
+                      ConfigurationMode = 'ApplyAndAutoCorrect';
+                      DownloadManagerCustomData = @{ServerUrl = "http://"+$Server+":8080/PSDSCPullServer.svc"; AllowUnsecureConnection = $true}
+                   }
+    }
+    PullClient -ID 'INSERTGUID' -Server 'INSERTSERVER' -Output 'C:\DSCConfig\'
+    Set-DscLocalConfigurationManager -ComputerName 'Localhost' -Path 'C:\DSCConfig\' -Verbose
+
+
+**Additional references, snippets, and examples**
 This example shows how to manually initiate a client connection (requires WMF5) for testing. 
 Update-DSCConfiguration –Wait -Verbose
 
