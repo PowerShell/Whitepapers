@@ -128,7 +128,7 @@ Most organizations today require that network traffic, especially traffic that i
 
 The certificate requirements to secure HTTPS traffic for pull server are not different than securing any other HTTPS web site. The **Web Server** template in a Windows Server Certificate Services satisfies the required capabilities.
 
-Planning task
+|Planning task|
 |---|
 |If certificate requests are not automated, who will you need to contact to requests a certificate?|
 |What is the average turnaround for the request?|
