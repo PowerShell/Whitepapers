@@ -523,8 +523,8 @@ The [Add-DnsServerResourceRecordName](http://bit.ly/1G1H31L) cmdlet is used to a
 The PowerShell Function to [Create a Checksum and Publish DSC MOF to SMB Pull Server](http://bit.ly/1E46BhI) automatically generates the required checksum, and then copies both the MOF configuration and checksum files to the SMB pull server.
 
 Appendix - Understanding ODATA service data file types
-===
-During deployment of a Pull Server that includes the ODATA web service, a data file is created to store information.  The type of file created depends on factors described below.
+======================================================
+A data file is stored to create information during deployment of a pull server that includes the OData web service. The type of file depends on the operating system, as described below.
 
  - **Windows Server 2012**  
 The file type will always be   .mdb
