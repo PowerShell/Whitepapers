@@ -5,8 +5,8 @@ Windows PowerShell Desired State Configuration Pull Server
 ----------------------------------------------------------
 Summary: This document is intended to include process and extensibility to assist engineers who are preparing for the solution. Details should provide best practices as identified by customers and then validated by the product team to ensure recommendations are future facing and considered stable.
 
- |Doc Info
----|---
+| |Doc Info|
+|:---|:---|
 Author | Michael Greene  
 Reviewers | Ben Gelens, Ravikanth Chaganti, Aleksandar Nikolic  
 Published | April, 2015
