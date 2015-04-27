@@ -69,6 +69,7 @@ The **PowerShellGet** module will download the module to
 
 > C:\Program Files\Windows PowerShell\Modules.
 
+
 |Planning task|
 |---|
 |Do you have access to the installation files for Windows Server 2012 R2?|
