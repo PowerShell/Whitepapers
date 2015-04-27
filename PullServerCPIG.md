@@ -17,7 +17,6 @@ Some information relates to pre-released product which may be substantially modi
 
 Abstract
 --------
-
 This document is designed to provide official guidance for anyone planning for a Windows PowerShell Desired State Configuration pull server implementation. A pull server is a simple service that should take only minutes to deploy. Although this document will offer technical how-to guidance that can be used in a deployment, the value of this document is as a reference for best practices and what to think about before deploying.
 Readers should have basic familiarity with DSC, and the terms used to describe the components that are included in a DSC deployment. For more information, see the [Windows PowerShell Desired State Configuration Overview](https://technet.microsoft.com/en-us/library/dn249912.aspx)  topic.
 As DSC is expected to evolve at cloud cadence, the underlying technology including pull server is also expected to evolve and to introduce new capabilities. This document includes a version table in the appendix that provides references to previous releases and references to future looking solutions to encourage forward-looking designs.
@@ -41,12 +40,10 @@ The pull server role can be deployed as either a Web Server instance or an SMB f
 
 Configuration planning
 ======================
-
 For any enterprise software deployment there is information that can be collected in advance to help plan for the correct architecture and to be prepared for the steps required to complete the deployment. The following sections provide information regarding how to prepare and the organizational connections that will likely need to happen in advance.
 
 Software requirements
 ---------------------
-
 Deployment of a pull server requires the DSC Service feature of Windows Server. This feature was introduced in Windows Server 2012, and has been updated through ongoing releases of Windows Management Framework (WMF).
 
 **Software downloads**
@@ -82,7 +79,6 @@ The **PowerShellGet** module will download the module to
 
 Hardware requirements
 ---------------------
-
 Pull server deployments are supported on both physical and virtual servers. The sizing requirements for pull server align with the requirements for Windows Server 2012 R2.
 
 CPU: 1.4 GHz 64-bit processor  
@@ -99,12 +95,10 @@ Network: Gigabit Ethernet Adapter
 
 Accounts
 --------
-
 There are no service account requirements to deploy a pull server instance. However there are scenarios where the website could run in the context of a local user account. As an example, if there is a need to access a storage share for website content and either the Windows Server or the device hosting the storage share are not domain joined.
 
 DNS records
 -----------
-
 You will need a server name to use when configuring clients to work with a pull server environment. In test environments, typically the server hostname is used, or the IP address for the server can be used if DNS name resolution is not available. In production environments or in a lab environment that is intended to represent a production deployment, the best practice is to create a DNS CNAME record.
 
 A DNS CNAME allows you to create an alias to refer to your host (A) record. The intent of the additional name record is to increase flexibility should a change be required in the future. A CNAME can help to isolate the client configuration so that changes to the server environment, such as replacing a pull server or adding additional pull servers, will not require a corresponding change to the client configuration.
@@ -128,7 +122,6 @@ For more information, see [Configuring DNS Round Robin in Windows Server](https:
 
 Public Key Infrastructure
 -------------------------
-
 Most organizations today require that network traffic, especially traffic that includes such sensitive data as how servers are configured, must be validated and/or encrypted during transit. While it is possible to deploy a pull server using HTTP which facilitates client requests in clear text, it is a best practice to secure traffic using HTTPS. The service can be configured to use HTTPS using a set of parameters in the DSC resource **xPSDesiredStateConfiguration**.
 The certificate requirements to secure HTTPS traffic for pull server are not different than securing any other HTTPS web site. The **Web Server** template in a Windows Server Certificate Services satisfies the required capabilities.
 |Planning task|
@@ -177,7 +170,6 @@ In a highly available scenario where multiple servers are configured as pull ser
 
 Staging configurations and modules on the pull server
 -----------------------------------------------------
-
 As part of configuration planning, you will need to think about which DSC modules and configurations will be hosted by the pull server. For the purpose of configuration planning it is important to have a basic understanding of how to prepare and deploy content to a pull server. 
 
 In the future, this section will be expanded and included in an Operations Guide for DSC Pull Server.  The guide will discuss the day to day process for managing modules and configurations over time with automation. 
@@ -224,7 +216,6 @@ The GUID is something that should be considered sensitive data because it could 
 
 Installation Guide
 ==================
-
 *Scripts given in this document are stable examples. Always review scripts carefully before executing them in a production environment.*
 
 **Prerequisites**
@@ -247,7 +238,7 @@ The best method to deploy a DSC pull server is to use a DSC configuration script
 **Pull server deployment example scripts**
 Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server to be EN-US locale.
 
-**Basic configuration for Windows Server 2012**
+*Basic configuration for Windows Server 2012*
 
     # This is a very basic Configuration to deploy a pull server instance in a lab environment on Windows Server 2012.
     
@@ -279,7 +270,7 @@ Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server 
     Start-DscConfiguration -Wait -Force -Verbose -Path 'C:\PullServerConfig\'
 
 
-**Advanced configuration for Windows Server 2012 R2 (script contents)**
+*Advanced configuration for Windows Server 2012 R2 (script contents)*
 
     # This is an advanced Configuration example for Pull Server production deployments on Windows Server 2012 R2.
     # Many of the features demonstrated are optional and provided to demonstrate how to adapt the Configuration for multiple scenarios
@@ -476,7 +467,8 @@ Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server 
     Node
     
 **Pull server client example scripts**
-Configure clients
+
+*Configure clients*
 
     Configuration PullClient {
      param(
@@ -501,16 +493,9 @@ Configure clients
 
 **Additional references, snippets, and examples**
 This example shows how to manually initiate a client connection (requires WMF5) for testing. 
-Update-DSCConfiguration –Wait -Verbose
 
-The Add-DnsServerResourceRecordName (http://bit.ly/1G1H31L) cmdlet is used to add a type CNAME record to a DNS zone. 
-The PowerShell Function to Create a Checksum and Publish DSC MOF to SMB Pull Server (http://bit.ly/1E46BhI) automatically generates the required checksum, and then copies both the MOF configuration and checksum files to the SMB pull server.
-Revision history
-Publication Date	Version	Comments
-4/10/2015	0.1	Initial Draft Review
-4/14/2015	0.13	Draft including first round of feedback from Ben and Ravi
-4/15/205	0.14	Draft including feedback from Keith Bankston
-4/17/2015	0.15	Draft including customer feedback
-4/20/2015	0.16	Final draft include feedback from Aleksander
-4/20/2015	1.0	Release 1.0
+    Update-DSCConfiguration –Wait -Verbose
 
+The [Add-DnsServerResourceRecordName](http://bit.ly/1G1H31L) cmdlet is used to add a type CNAME record to a DNS zone. 
+
+The PowerShell Function to [Create a Checksum and Publish DSC MOF to SMB Pull Server](http://bit.ly/1E46BhI) automatically generates the required checksum, and then copies both the MOF configuration and checksum files to the SMB pull server.
