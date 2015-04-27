@@ -141,18 +141,18 @@ Choosing an architecture
 ------------------------
 A pull server can be deployed using either a web service hosted on IIS, or an SMB file share. In most situations, the web service option will provide greater flexibility. It is not uncommon for HTTPS traffic to traverse network boundaries, whereas SMB traffic is often filtered or blocked between networks. The web service also offers the option to include a Conformance Server or Web Reporting Manager (both topics to be addressed in a future version of this document) that provide a mechanism for clients to report status back to a server for centralized visibility. SMB provides an option for environments where policy dictates that a web server should not be utilized, and for other environmental requirements that make a web server role undesirable. In either case, remember to evaluate the requirements for signing and encrypting traffic. HTTPS, SMB signing, and IPSEC policies are all options worth considering.
 
-**Designing for high availability**
+**Designing for high availability**  
 The pull server role can be deployed in a highly available architecture. The web service role can be load balanced and the files and folders that include DSC modules and DSC configurations can be located on highly available storage.
 
 Bear in mind that once configurations and modules are delivered to a target node all data required to perform tests and to set configurations is stored locally on each node. Only changes are delivered from the pull server. A service outage for a pull server would not be an interruption unless deployments are active.  Typically, high availability is only warranted for the largest of environments.
 
 Configuring a highly available pull server environment requires decisions about how to distribute client requests across multiple server nodes, and how to share the required server files across those nodes.
 
-**Load balancing**
+**Load balancing**  
 Clients interacting with the web service make a request for information that is returned in a single response. No sequential requests are required, so it is not necessary for the load balancing platform to ensure sessions are maintained on a single server at any point in time.
 
 |Planning task|
-|-|
+|---|
 |What solution will be used for load balancing traffic across servers?|
 |If using a hardware load balancer, who will take a request to add a new configuration to the device?|
 |What is the average turnaround for a request to configure a new load balanced web service?|
@@ -166,7 +166,7 @@ Shared storage
 In a highly available scenario where multiple servers are configured as pull servers and connections are load balanced across them, it is critical that the resources and configurations available from those servers be identical. The best way to accomplish this is to store this content on a highly available location such as a clustered file share. The location of the share can be specified in the configuration for each server.For more information about shared storage options, see Scale-Out File Server for Application Data Overview .
 
 |Planning task|
-|-|
+|---|
 |What solution will be used to host the highly available share?|
 |Who will handle the request for a new highly available share?|
 |What is the average turnaround time for a highly available share to be available?|
@@ -178,7 +178,7 @@ As part of configuration planning, you will need to think about which DSC module
 
 In the future, this section will be expanded and included in an Operations Guide for DSC Pull Server.  The guide will discuss the day to day process for managing modules and configurations over time with automation. 
 
-**DSC modules**
+**DSC modules**  
 Clients that request a configuration will need the required DSC modules. A functionality of the pull server is to automate distribution on demand of DSC modules to clients. If you are deploying a pull server for the first time, perhaps as a lab or proof of concept, you are likely going to depend on DSC modules that are available from public repositories such as the PowerShell Gallery or the PowerShell.org GitHub repositories for DSC modules.
 
 It is critical to remember that even for trusted online sources such as the PowerShell Gallery, any module that is downloaded from a public repository should be reviewed by someone with PowerShell experience and knowledge of the environment where the modules will be used prior to being used in production. While completing this task it is a good time to check for any additional payload in the module that can be removed such as documentation and example scripts. This will reduce the network bandwidth per client in their first request, when modules will be downloaded over the network from server to client.
@@ -188,7 +188,7 @@ Each module must be packaged in a specific format, a ZIP file named ModuleName_V
     New-DscCheckSum -ConfigurationPath .\ -OutPath .\
 
 |Planning task|
-|-|
+|---|
 |If you are planning a test or lab environment which scenarios are key to validate?|
 |Are there publicly available modules that contain resources to cover everything you need or will you need to author your own resources?|
 |Will your environment have Internet access to retrieve public modules?|
@@ -198,10 +198,10 @@ Each module must be packaged in a specific format, a ZIP file named ModuleName_V
 |Will you automate packaging, copying, and creating a checksum for production-ready DSC modules to the server, from your source repo?|
 |Will your team be responsible for managing the automation platform as well?|
 
-**DSC configurations**
+**DSC configurations**  
 The purpose of a pull server is to provide a centralized mechanism for distributing DSC configurations to client nodes. The configurations are stored on the server as MOF documents. Each document will be named with a unique GUID. When clients are configured to connect with a pull server, they are also given the GUID for the configuration they should request. This system of referencing configurations by GUID guarantees global uniqueness and is flexible such that a configuration can be applied with granularity per node, or as a role configuration that spans many servers that should have identical configurations.
 
-**GUIDs**
+**GUIDs**  
 Planning for configuration GUIDs is worth additional attention when thinking through a pull server deployment. There is no specific requirement for how to handle GUIDs and the process is likely to be unique for each environment. The process can range from simple to complex: a centrally stored CSV file, a simple SQL table, a CMDB, or a complex solution requiring integration with another tool or software solution. There are two general approaches:
 
  - **Assigning GUIDs per server** — Provides a measure of assurance that every server configuration is controlled individually. This provides a level of precision around updates and can work well in environments with few servers.
