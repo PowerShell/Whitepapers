@@ -25,7 +25,7 @@ The two major sections of this document:
  - Configuration Planning
  - Installation Guide
  
-**Versions of the Windows Management Framework**  
+**Versions of the Windows Management Framework**  
 The information in this document is intended to apply to Windows Management Framework 5.0. While WMF 5.0 is not required for deploying and operating a pull server, version 5.0 is the focus of this document.
 
 **Windows PowerShell Desired State Configuration**  
