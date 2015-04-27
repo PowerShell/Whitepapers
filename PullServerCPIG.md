@@ -3,12 +3,13 @@ Configuration Planning and Installation Guide
 
 Windows PowerShell Desired State Configuration Pull Server
 ----------------------------------------------------------
-
-Author:        Michael Greene  
-Reviewers:     Ben Gelens, Ravikanth Chaganti, Aleksandar Nikolic  
-Published:     April, 2015
-
 Summary: This document is intended to include process and extensibility to assist engineers who are preparing for the solution. Details should provide best practices as identified by customers and then validated by the product team to ensure recommendations are future facing and considered stable.
+
+ |Doc Info
+---|---
+Author | Michael Greene  
+Reviewers | Ben Gelens, Ravikanth Chaganti, Aleksandar Nikolic  
+Published | April, 2015
 
 © 2015 Microsoft Corporation. All rights reserved. This document is provided "as-is." Information and views expressed in this document, including URL and other Internet Web site references, may change without notice. You bear the risk of using it.
 Some examples are for illustration only and are fictitious. No real association is intended or inferred.
@@ -71,13 +72,13 @@ The **PowerShellGet** module will download the module to
 
 > C:\Program Files\Windows PowerShell\Modules.
 
-|Planning task|
-|---|
-|Do you have access to the installation files for Windows Server 2012 R2?|
-|Will the deployment environment have Internet access to download WMF and the module from the online gallery?|
-|How will you install the latest security updates after installing the operating system?|
-|Will the environment have Internet access to obtain updates, or will it have a local Windows Server Update Services (WSUS) server?|
-|Do you have access to Windows Server installation files that already include updates through offline injection?|
+Planning task|
+---|
+Do you have access to the installation files for Windows Server 2012 R2?|
+Will the deployment environment have Internet access to download WMF and the module from the online gallery?|
+How will you install the latest security updates after installing the operating system?|
+Will the environment have Internet access to obtain updates, or will it have a local Windows Server Update Services (WSUS) server?|
+Do you have access to Windows Server installation files that already include updates through offline injection?|
 
 Hardware requirements
 ---------------------
@@ -88,12 +89,12 @@ Memory: 512 MB
 Disk Space: 32 GB  
 Network: Gigabit Ethernet Adapter  
 
-|Planning task|
-|---|
-|Will you deploy on physical hardware or on a virtualization platform?|
-|What is the process to request a new server for your target environment?|
-|What is the average turnaround time for a server to become available?|
-|What size server will you request?|
+Planning task|
+---|
+Will you deploy on physical hardware or on a virtualization platform?|
+What is the process to request a new server for your target environment?|
+What is the average turnaround time for a server to become available?|
+What size server will you request?|
 
 Accounts
 --------
@@ -107,21 +108,21 @@ A DNS CNAME allows you to create an alias to refer to your host (A) record. The 
 
 When choosing a name for the DNS record, keep the solution architecture in mind. If using load balancing, the certificate used to secure traffic over HTTPS will need to share the same name as the DNS record. Similarly, if using a highly available file share the virtual name for the cluster would be used.
 
-|Scenario |Best Practice|
-|:---|:---|
-|Test Environment |Reproduce the planned production environment, if possible. A server hostname is suitable for simple configurations. If DNS is not available, an IP address may be used in lieu of a hostname.|
-|Single Node Deployment |Create a DNS CNAME record that points to the server hostname.|
-|Highly Available Deployment |If clients will connect through a load balancing solution, create a hostname for the virtual IP and a CNAME record that references that hostname. If DNS round robin will be used to distribute client requests across pull servers, you must configure the name records to include the host names of all deployed pull server instances.|
+Scenario |Best Practice
+:---|:---
+Test Environment |Reproduce the planned production environment, if possible. A server hostname is suitable for simple configurations. If DNS is not available, an IP address may be used in lieu of a hostname.|
+Single Node Deployment |Create a DNS CNAME record that points to the server hostname.|
+Highly Available Deployment |If clients will connect through a load balancing solution, create a hostname for the virtual IP and a CNAME record that references that hostname. If DNS round robin will be used to distribute client requests across pull servers, you must configure the name records to include the host names of all deployed pull server instances.|
 
 For more information, see [Configuring DNS Round Robin in Windows Server](https://technet.microsoft.com/en-us/library/cc787484(v=ws.10).aspx).
 
-|Planning task|
-|---|
-|Do you know who to contact to have DNS records created and changed?|
-|What is the average turnaround for a request for a DNS record?|
-|Do you need to request static Hostname (A) records for servers?|
-|What will you request as a CNAME?|
-|If needed, what type of Load Balancing solution will you utilize? (see section titled Load Balancing for details)|
+Planning task|
+---|
+Do you know who to contact to have DNS records created and changed?|
+What is the average turnaround for a request for a DNS record?|
+Do you need to request static Hostname (A) records for servers?|
+What will you request as a CNAME?|
+If needed, what type of Load Balancing solution will you utilize? (see section titled Load Balancing for details)|
 
 Public Key Infrastructure
 -------------------------
@@ -130,14 +131,14 @@ Most organizations today require that network traffic, especially traffic that i
 
 The certificate requirements to secure HTTPS traffic for pull server are not different than securing any other HTTPS web site. The **Web Server** template in a Windows Server Certificate Services satisfies the required capabilities.
 
-|Planning task|
-|---|
-|If certificate requests are not automated, who will you need to contact to requests a certificate?|
-|What is the average turnaround for the request?|
-|How will the certificate file be transferred to you?|
-|How will the certificate private key be transferred to you?|
-|How long is the default expiration time?|
-|Have you settled on a DNS name for the pull server environment, that you can use for the certificate name?|
+Planning task|
+---|
+If certificate requests are not automated, who will you need to contact to requests a certificate?|
+What is the average turnaround for the request?|
+How will the certificate file be transferred to you?|
+How will the certificate private key be transferred to you?|
+How long is the default expiration time?|
+Have you settled on a DNS name for the pull server environment, that you can use for the certificate name?|
 
 Choosing an architecture
 ------------------------
@@ -153,26 +154,26 @@ Configuring a highly available pull server environment requires decisions about 
 **Load balancing**  
 Clients interacting with the web service make a request for information that is returned in a single response. No sequential requests are required, so it is not necessary for the load balancing platform to ensure sessions are maintained on a single server at any point in time.
 
-|Planning task|
-|---|
-|What solution will be used for load balancing traffic across servers?|
-|If using a hardware load balancer, who will take a request to add a new configuration to the device?|
-|What is the average turnaround for a request to configure a new load balanced web service?|
-|What information will be required for the request?|
-|Will you need to request an additional IP or will the team responsible for load balancing handle that?|
-|Do you have the DNS records needed, and will this be required by the team responsible for configuring the load balancing solution?|
-|Does the load balancing solution require that PKI be handled by the device or can it load balance HTTPS traffic as long as there are no session requirements?|
+Planning task|
+---|
+What solution will be used for load balancing traffic across servers?|
+If using a hardware load balancer, who will take a request to add a new configuration to the device?|
+What is the average turnaround for a request to configure a new load balanced web service?|
+What information will be required for the request?|
+Will you need to request an additional IP or will the team responsible for load balancing handle that?|
+Do you have the DNS records needed, and will this be required by the team responsible for configuring the load balancing solution?|
+Does the load balancing solution require that PKI be handled by the device or can it load balance HTTPS traffic as long as there are no session requirements?|
 
 Shared storage
 --------------
 In a highly available scenario where multiple servers are configured as pull servers and connections are load balanced across them, it is critical that the resources and configurations available from those servers be identical. The best way to accomplish this is to store this content on a highly available location such as a clustered file share. The location of the share can be specified in the configuration for each server.For more information about shared storage options, see Scale-Out File Server for Application Data Overview .
 
-|Planning task|
-|---|
-|What solution will be used to host the highly available share?|
-|Who will handle the request for a new highly available share?|
-|What is the average turnaround time for a highly available share to be available?|
-|What information will the teams responsible for storage and/or clustering need?|
+Planning task|
+---|
+What solution will be used to host the highly available share?|
+Who will handle the request for a new highly available share?|
+What is the average turnaround time for a highly available share to be available?|
+What information will the teams responsible for storage and/or clustering need?|
 
 Staging configurations and modules on the pull server
 -----------------------------------------------------
@@ -191,16 +192,16 @@ Each module must be packaged in a specific format, a ZIP file named ModuleName_V
 New-DscCheckSum -ConfigurationPath .\ -OutPath .\
 ```
 
-|Planning task|
-|---|
-|If you are planning a test or lab environment which scenarios are key to validate?|
-|Are there publicly available modules that contain resources to cover everything you need or will you need to author your own resources?|
-|Will your environment have Internet access to retrieve public modules?|
-|Who will be responsible for reviewing DSC modules?|
-|If you are planning a production environment what will you use as a local repository for storing DSC modules?|
-|Will a central team accept DSC modules from application teams? What will the process be?|
-|Will you automate packaging, copying, and creating a checksum for production-ready DSC modules to the server, from your source repo?|
-|Will your team be responsible for managing the automation platform as well?|
+Planning task|
+---|
+If you are planning a test or lab environment which scenarios are key to validate?|
+Are there publicly available modules that contain resources to cover everything you need or will you need to author your own resources?|
+Will your environment have Internet access to retrieve public modules?|
+Who will be responsible for reviewing DSC modules?|
+If you are planning a production environment what will you use as a local repository for storing DSC modules?|
+Will a central team accept DSC modules from application teams? What will the process be?|
+Will you automate packaging, copying, and creating a checksum for production-ready DSC modules to the server, from your source repo?|
+Will your team be responsible for managing the automation platform as well?|
 
 **DSC configurations**  
 The purpose of a pull server is to provide a centralized mechanism for distributing DSC configurations to client nodes. The configurations are stored on the server as MOF documents. Each document will be named with a unique GUID. When clients are configured to connect with a pull server, they are also given the GUID for the configuration they should request. This system of referencing configurations by GUID guarantees global uniqueness and is flexible such that a configuration can be applied with granularity per node, or as a role configuration that spans many servers that should have identical configurations.
@@ -213,14 +214,14 @@ Planning for configuration GUIDs is worth additional attention when thinking thr
 
 The GUID is something that should be considered sensitive data because it could be leveraged by someone with malicious intent to gain intelligence about how servers are deployed and configured in your environment. For more information, see [Securely allocating GUIDs in PowerShell Desired State Configuration Pull Mode](http://blogs.msdn.com/b/powershell/archive/2014/12/31/securely-allocating-guids-in-powershell-desired-state-configuration-pull-mode.aspx).
 
-|Planning task|
-|---|
-|Who will be responsible for copying configurations in to the pull server folder when they are ready?|
-|If Configurations are authored by an application team, what will the process be to hand them off?|
-|Will you leverage a repository to store configurations as they are being authored, across teams?|
-|Will you automate the process of copying configurations to the server and creating a checksum when they are ready?|
-|How will you map GUIDs to servers or roles, and where will this be stored?|
-|What will you use as a process to configure client machines, and how will it integrate with your process for creating and storing Configuration GUIDs?|
+Planning task|
+---|
+Who will be responsible for copying configurations in to the pull server folder when they are ready?|
+If Configurations are authored by an application team, what will the process be to hand them off?|
+Will you leverage a repository to store configurations as they are being authored, across teams?|
+Will you automate the process of copying configurations to the server and creating a checksum when they are ready?|
+How will you map GUIDs to servers or roles, and where will this be stored?|
+What will you use as a process to configure client machines, and how will it integrate with your process for creating and storing Configuration GUIDs?|
 
 Installation Guide
 ==================
