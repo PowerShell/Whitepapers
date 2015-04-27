@@ -70,7 +70,7 @@ The **PowerShellGet** module will download the module to
 > C:\Program Files\Windows PowerShell\Modules.
 
 |Planning task|
-|-|
+|-------------|
 |Do you have access to the installation files for Windows Server 2012 R2?|
 |Will the deployment environment have Internet access to download WMF and the module from the online gallery?|
 |How will you install the latest security updates after installing the operating system?|
