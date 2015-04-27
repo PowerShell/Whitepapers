@@ -517,3 +517,14 @@ Update-DSCConfiguration –Wait -Verbose
 The [Add-DnsServerResourceRecordName](http://bit.ly/1G1H31L) cmdlet is used to add a type CNAME record to a DNS zone. 
 
 The PowerShell Function to [Create a Checksum and Publish DSC MOF to SMB Pull Server](http://bit.ly/1E46BhI) automatically generates the required checksum, and then copies both the MOF configuration and checksum files to the SMB pull server.
+
+Appendix - Understanding ODATA data files
+===
+During deployment of a Pull Server that includes the ODATA web service, a data file is created to store information.  The type of file created depends on factors described below.
+
+ - **Windows Server 2012**  
+The file type will always be   .mdb
+ - **Windows Server 2012 R2**  
+The file type will default to .edb unless a .mdb is specified in the configuration
+
+In the [Advanced example script](https://github.com/mgreenegit/Whitepapers/blob/Dev/PullServerCPIG.md#installation-and-configuration-scripts) for installing a Pull Server, you will also find an example of how to automatically control the web.config file settings to prevent any chance of error caused by file type.
