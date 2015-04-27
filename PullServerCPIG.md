@@ -63,7 +63,7 @@ A pull server deployment can be simplified by provisioning the service using a D
 
 Use the **Install-Module** cmdlet from the **PowerShellGet** module.
 
-    Install-Module xPSDesiredStateConfiguration
+   ```Install-Module xPSDesiredStateConfiguration
 
 The **PowerShellGet** module will download the module to 
 
@@ -225,12 +225,12 @@ Installation Guide
 **Prerequisites**
 To verify the version of PowerShell on your server use the following command.
 
-    $PSVersionTable.PSVersion
+```$PSVersionTable.PSVersion
 
 If possible, upgrade to the latest version of Windows Management Framework.
 Next, download the xPsDesiredStateConfiguration module using the following command.
 
-    Install-Module xPSDesiredStateConfiguration
+```Install-Module xPSDesiredStateConfiguration
 
 The command will ask for your approval before downloading the module.
 
@@ -242,8 +242,7 @@ The best method to deploy a DSC pull server is to use a DSC configuration script
 Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server to be EN-US locale.
 
 **Basic configuration for Windows Server 2012**
-```
-# This is a very basic Configuration to deploy a pull server instance in a lab environment on Windows Server 2012.
+```# This is a very basic Configuration to deploy a pull server instance in a lab environment on Windows Server 2012.
 
 Configuration PullServer {
 Import-DscResource -ModuleName xPSDesiredStateConfiguration
@@ -274,8 +273,7 @@ Start-DscConfiguration -Wait -Force -Verbose -Path 'C:\PullServerConfig\'
 ```
 
 **Advanced configuration for Windows Server 2012 R2**
-```
-# This is an advanced Configuration example for Pull Server production deployments on Windows Server 2012 R2.
+```# This is an advanced Configuration example for Pull Server production deployments on Windows Server 2012 R2.
 # Many of the features demonstrated are optional and provided to demonstrate how to adapt the Configuration for multiple scenarios
 # Select the needed resources based on the requirements for each environment.
 # Optional scenarios include:
@@ -458,8 +456,7 @@ Start-DscConfiguration -Wait -Force -Verbose -Path 'C:\PullServerConfig\'
 
 
 **Verify pull server functionality**
-```
-# This function is meant to simplify a check against a DSC pull server. If you do not use the default service URL, you will need to adjust accordingly.
+```# This function is meant to simplify a check against a DSC pull server. If you do not use the default service URL, you will need to adjust accordingly.
 function Verify-DSCPullServer ($fqdn) {
     ([xml](invoke-webrequest "https://$($fqdn):8080/psdscpullserver.svc" | % Content)).service.workspace.collection.href
 }
@@ -473,8 +470,7 @@ Node
 ```
 
 **Configure clients**
-```
-Configuration PullClient {
+```Configuration PullClient {
     param(
     $ID,
     $Server
@@ -501,7 +497,7 @@ Additional references, snippets, and examples
 This example shows how to manually initiate a client connection (requires WMF5) for testing. 
 
 
-    Update-DSCConfiguration –Wait -Verbose
+```Update-DSCConfiguration –Wait -Verbose
 
 The [Add-DnsServerResourceRecordName](http://bit.ly/1G1H31L) cmdlet is used to add a type CNAME record to a DNS zone. 
 
