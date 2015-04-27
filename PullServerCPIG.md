@@ -5,7 +5,6 @@ Windows PowerShell Desired State Configuration Pull Server
 ----------------------------------------------------------
 
 Author: Michael Greene
-
 Reviewers: Ben Gelens, Ravikanth Chaganti, Aleksandar Nikolic
 
 Published: April, 2015
