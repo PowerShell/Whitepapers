@@ -221,3 +221,293 @@ The GUID is something that should be considered sensitive data because it could 
 |Will you automate the process of copying configurations to the server and creating a checksum when they are ready?|
 |How will you map GUIDs to servers or roles, and where will this be stored?|
 |What will you use as a process to configure client machines, and how will it integrate with your process for creating and storing Configuration GUIDs?|
+
+Installation Guide
+==================
+
+*Scripts given in this document are stable examples. Always review scripts carefully before executing them in a production environment.*
+
+**Prerequisites**
+To verify the version of PowerShell on your server use the following command.
+
+    $PSVersionTable.PSVersion
+
+If possible, upgrade to the latest version of Windows Management Framework.
+Next, download the xPsDesiredStateConfiguration module using the following command.
+
+    Install-Module xPSDesiredStateConfiguration
+
+The command will ask for your approval before downloading the module.
+
+Installation and configuration scripts
+--------------------------------------
+
+The best method to deploy a DSC pull server is to use a DSC configuration script. This document will present scripts including both basic settings that would configure only the DSC web service and advanced settings that would configure a Windows Server end-to-end including DSC web service.
+
+**Pull server deployment example scripts**
+Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server to be EN-US locale.
+
+**Basic configuration for Windows Server 2012**
+
+    # This is a very basic Configuration to deploy a pull server instance in a lab environment on Windows Server 2012.
+    
+    Configuration PullServer {
+    Import-DscResource -ModuleName xPSDesiredStateConfiguration
+            
+            # Load the Windows Server DSC Service feature
+            WindowsFeature DSCServiceFeature
+            {
+              Ensure = 'Present'
+              Name = 'DSC-Service'
+            }
+    
+            # Use the DSC Resource to simplify deployment of the web service
+            xDSCWebService PSDSCPullServer
+            {
+              Ensure = 'Present'
+              EndpointName = 'PSDSCPullServer'
+              Port = 8080
+              PhysicalPath = "$env:SYSTEMDRIVE\inetpub\wwwroot\PSDSCPullServer"
+              CertificateThumbPrint = 'AllowUnencryptedTraffic'
+              ModulePath = "$env:PROGRAMFILES\WindowsPowerShell\DscService\Modules"
+              ConfigurationPath = "$env:PROGRAMFILES\WindowsPowerShell\DscService\Configuration"
+              State = 'Started'
+              DependsOn = '[WindowsFeature]DSCServiceFeature'
+            }
+    }
+    PullServer -OutputPath 'C:\PullServerConfig\'
+    Start-DscConfiguration -Wait -Force -Verbose -Path 'C:\PullServerConfig\'
+
+
+**Advanced configuration for Windows Server 2012 R2 (script contents)**
+
+    # This is an advanced Configuration example for Pull Server production deployments on Windows Server 2012 R2.
+    # Many of the features demonstrated are optional and provided to demonstrate how to adapt the Configuration for multiple scenarios
+    # Select the needed resources based on the requirements for each environment.
+    # Optional scenarios include:
+    #      * Reduce footprint to Server Core
+    #      * Rename server and join domain
+    #      * Switch from SSL to TLS for HTTPS
+    #      * Automatically load certificate from Certificate Authority
+    #      * Locate Modules and Configuration data on remote SMB share
+    #      * Manage state of default websites in IIS
+    
+    param (
+            [Parameter(Mandatory=$true)] 
+            [ValidateNotNullorEmpty()] 
+            [System.String] $ServerName,
+            [System.String] $DomainName,
+            [System.String] $CARootName,
+            [System.String] $CAServerFQDN,
+            [System.String] $CertSubject,
+            [System.String] $SMBShare,
+            [Parameter(Mandatory=$true)] 
+            [ValidateNotNullorEmpty()] 
+            [PsCredential] $Credential
+        )
+    
+    Configuration PullServer {
+        Import-DscResource -ModuleName xPSDesiredStateConfiguration, xWebAdministration, xCertificate, xComputerManagement
+        Node localhost
+        {
+            
+            # Configure the server to automatically corret configuration drift including reboots if needed.
+            LocalConfigurationManager
+            {
+                ConfigurationMode = 'ApplyAndAutoCorrect'
+                RebootNodeifNeeded = $node.RebootNodeifNeeded
+                CertificateId = $node.Thumbprint
+            }
+    
+            # Remove all GUI interfaces so the server has minimum running footprint.
+            WindowsFeature ServerCore
+            {
+                Ensure = 'Absent'
+                Name = 'User-Interfaces-Infra'
+            }
+    
+            # Set the server name and if needed, join a domain. If not joining a domain, remove the DomainName parameter.
+            xComputer DomainJoin
+    	    {
+                Name = $Node.ServerName
+    	    	DomainName = $Node.DomainName
+                Credential = $Node.Credential
+    	    }
+    
+            # The next series of settings disable IIS and enable TLS, for environments where that is required by policy.
+            Registry TLS1_2ServerEnabled
+            {
+                Ensure = 'Present'
+                Key = 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Server'
+                ValueName = 'Enabled'
+                ValueData = 1
+                ValueType = 'Dword'
+            }
+            Registry TLS1_2ServerDisabledByDefault
+            {
+                Ensure = 'Present'
+                Key = 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Server'
+                ValueName = 'DisabledByDefault'
+                ValueData = 0
+                ValueType = 'Dword'
+            }
+            Registry TLS1_2ClientEnabled
+            {
+                Ensure = 'Present'
+                Key = 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Client'
+                ValueName = 'Enabled'
+                ValueData = 1
+                ValueType = 'Dword'
+            }
+            Registry TLS1_2ClientDisabledByDefault
+            {
+                Ensure = 'Present'
+                Key = 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Client'
+                ValueName = 'DisabledByDefault'
+                ValueData = 0
+                ValueType = 'Dword'
+            }
+            Registry SSL2ServerDisabled
+            {
+                Ensure = 'Present'
+                Key = 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server'
+                ValueName = 'Enabled'
+                ValueData = 0
+                ValueType = 'Dword'
+            }
+    
+            # Install the Windows Server DSC Service feature
+            WindowsFeature DSCServiceFeature
+            {
+              Ensure = 'Present'
+              Name = 'DSC-Service'
+            }
+    
+            # If using a certificate from a local Active Directory Enterprise Root Certificate Authority, complete a request and install the certificate
+            xCertReq SSLCert
+    	    {
+    		    CARootName = $Node.CARootName
+    		    CAServerFQDN = $Node.CAServerFQDN
+    		    Subject = $Node.CertSubject
+    		    AutoRenew = $Node.AutoRenew
+    		    Credential = $Node.Credential
+    	    }
+    
+            # Use the DSC resource to simplify deployment of the web service.  You might also consider modifying the default port, possibly leveraging port 443 in environments where that is enforced as a standard.
+            xDSCWebService PSDSCPullServer
+            {
+              Ensure = 'Present'
+              EndpointName = 'PSDSCPullServer'
+              Port = 8080
+              PhysicalPath = "$env:SYSTEMDRIVE\inetpub\wwwroot\PSDSCPullServer"
+              CertificateThumbPrint = 'CertificateSubject'
+              CertificateSubject = $Node.CertSubject
+              ModulePath = "$($Node.SMBShare)\DscService\Modules"
+              ConfigurationPath = "$($Node.SMBShare)\DscService\Configuration"
+              State = 'Started'
+              DependsOn = '[WindowsFeature]DSCServiceFeature'
+            }
+    
+            # Validate web config file contains current DB settings
+            xWebConfigKeyValue CorrectDBProvider
+            { 
+              ConfigSection = 'AppSettings'
+              Key = 'dbprovider'
+              Value = 'System.Data.OleDb'
+              WebsitePath = 'IIS:\sites\PSDSCPullServer'
+              DependsOn = '[xDSCWebService]PSDSCPullServer'
+            }
+            xWebConfigKeyValue CorrectDBConnectionStr
+            { 
+              ConfigSection = 'AppSettings'
+              Key = 'dbconnectionstr'
+              Value = 'Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\Program Files\WindowsPowerShell\DscService\Devices.mdb;'
+              WebsitePath = 'IIS:\sites\PSDSCPullServer'
+              DependsOn = '[xDSCWebService]PSDSCPullServer'
+            }
+    
+            # Stop the default website
+            xWebsite StopDefaultSite  
+            { 
+                Ensure = 'Present'
+                Name = 'Default Web Site'
+                State = 'Stopped'
+                PhysicalPath = 'C:\inetpub\wwwroot'
+                DependsOn = '[WindowsFeature]DSCServiceFeature'
+            }
+        }
+    }
+    $configData = @{
+        AllNodes = @(
+            @{
+                NodeName = 'localhost'
+                ServerName = $ServerName
+                DomainName = $DomainName
+                CARootName = $CARootName
+                CAServerFQDN = $CAServerFQDN
+                CertSubject = $CertSubject
+                AutoRenew = $true
+                SMBShare = $SMBShare
+                Credential = $Credential
+                RebootNodeifNeeded = $true
+                CertificateFile = 'c:\PullServerConfig\Cert.cer'
+                Thumbprint = 'B9A39921918B466EB1ADF2509E00F5DECB2EFDA9'
+                }
+            )
+        }
+    PullServer -ConfigurationData $configData -OutputPath 'C:\PullServerConfig\'
+    Set-DscLocalConfigurationManager -ComputerName localhost -Path 'C:\PullServerConfig\'
+    Start-DscConfiguration -Wait -Force -Verbose -Path 'C:\PullServerConfig\'
+    
+    # .\Script.ps1 -ServerName web1 -domainname 'test.pha' -carootname 'test-dc01-ca' -caserverfqdn 'dc01.test.pha' -certsubject 'CN=service.test.pha' -smbshare '\\sofs1.test.pha\share' 
+
+**Verify pull server functionality**
+
+    # This function is meant to simplify a check against a DSC pull server. If you do not use the default service URL, you will need to adjust accordingly.
+    function Verify-DSCPullServer ($fqdn) {
+        ([xml](invoke-webrequest "https://$($fqdn):8080/psdscpullserver.svc" | % Content)).service.workspace.collection.href
+    }
+    Verify-DSCPullServer 'INSERT SERVER FQDN' 
+    
+    Expected Result:
+    Action
+    Module
+    StatusReport
+    Node
+    
+**Pull server client example scripts**
+Configure clients
+Configuration PullClient {
+ param(
+    $ID,
+    $Server
+ )
+      LocalConfigurationManager 
+               { 
+                  ConfigurationID = $ID;
+                  RefreshMode = 'PULL';
+                  DownloadManagerName = 'WebDownloadManager';
+                  RebootNodeIfNeeded = $true;
+                  RefreshFrequencyMins = 30;
+                  ConfigurationModeFrequencyMins = 15; 
+                  ConfigurationMode = 'ApplyAndAutoCorrect';
+                  DownloadManagerCustomData = @{ServerUrl = "http://"+$Server+":8080/PSDSCPullServer.svc"; AllowUnsecureConnection = $true}
+               }
+}
+PullClient -ID 'INSERTGUID' -Server 'INSERTSERVER' -Output 'C:\DSCConfig\'
+Set-DscLocalConfigurationManager -ComputerName 'Localhost' -Path 'C:\DSCConfig\' -Verbose
+Additional references, snippets, and examples
+This example shows how to manually initiate a client connection (requires WMF5) for testing. 
+Update-DSCConfiguration –Wait -Verbose
+
+The Add-DnsServerResourceRecordName (http://bit.ly/1G1H31L) cmdlet is used to add a type CNAME record to a DNS zone. 
+The PowerShell Function to Create a Checksum and Publish DSC MOF to SMB Pull Server (http://bit.ly/1E46BhI) automatically generates the required checksum, and then copies both the MOF configuration and checksum files to the SMB pull server.
+Revision history
+Publication Date	Version	Comments
+4/10/2015	0.1	Initial Draft Review
+4/14/2015	0.13	Draft including first round of feedback from Ben and Ravi
+4/15/205	0.14	Draft including feedback from Keith Bankston
+4/17/2015	0.15	Draft including customer feedback
+4/20/2015	0.16	Final draft include feedback from Aleksander
+4/20/2015	1.0	Release 1.0
+
