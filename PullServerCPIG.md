@@ -69,7 +69,6 @@ The **PowerShellGet** module will download the module to
 
 > C:\Program Files\Windows PowerShell\Modules.
 
-
 |Planning task|
 |---|
 |Do you have access to the installation files for Windows Server 2012 R2?|
@@ -88,7 +87,7 @@ Disk Space: 32 GB
 Network: Gigabit Ethernet Adapter  
 
 |Planning task|
-|-|
+|---|
 |Will you deploy on physical hardware or on a virtualization platform?|
 |What is the process to request a new server for your target environment?|
 |What is the average turnaround time for a server to become available?|
