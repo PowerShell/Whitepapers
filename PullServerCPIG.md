@@ -274,7 +274,7 @@ Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server 
     Start-DscConfiguration -Wait -Force -Verbose -Path 'C:\PullServerConfig\'
 
 
-*Advanced configuration for Windows Server 2012 R2 (script contents)*
+*Advanced configuration for Windows Server 2012 R2*
 
     # This is an advanced Configuration example for Pull Server production deployments on Windows Server 2012 R2.
     # Many of the features demonstrated are optional and provided to demonstrate how to adapt the Configuration for multiple scenarios
