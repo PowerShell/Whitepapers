@@ -239,7 +239,7 @@ Installation and configuration scripts
 
 The best method to deploy a DSC pull server is to use a DSC configuration script. This document will present scripts including both basic settings that would configure only the DSC web service and advanced settings that would configure a Windows Server end-to-end including DSC web service.
 
-**Pull server deployment example scripts**
+**Pull server deployment example scripts**  
 Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server to be EN-US locale.
 
 *Basic configuration for Windows Server 2012*
