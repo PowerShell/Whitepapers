@@ -104,6 +104,7 @@ You will need a server name to use when configuring clients to work with a pull 
 A DNS CNAME allows you to create an alias to refer to your host (A) record. The intent of the additional name record is to increase flexibility should a change be required in the future. A CNAME can help to isolate the client configuration so that changes to the server environment, such as replacing a pull server or adding additional pull servers, will not require a corresponding change to the client configuration.
 
 When choosing a name for the DNS record, keep the solution architecture in mind. If using load balancing, the certificate used to secure traffic over HTTPS will need to share the same name as the DNS record. Similarly, if using a highly available file share the virtual name for the cluster would be used.
+
 |Scenario |Best Practice|
 |---|---|
 |Test Environment |Reproduce the planned production environment, if possible. A server hostname is suitable for simple configurations. If DNS is not available, an IP address may be used in lieu of a hostname.|
