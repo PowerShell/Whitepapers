@@ -8,7 +8,7 @@ Author: Michael Greene
 Reviewers: Ben Gelens, Ravikanth Chaganti, Aleksandar Nikolic  
 Published: April, 2015
 
-⋅⋅⋅Summary: This document is intended to include process and extensibility to assist engineers who are preparing for the solution. Details should provide best practices as identified by customers and then validated by the product team to ensure recommendations are future facing and considered stable.
+Summary: This document is intended to include process and extensibility to assist engineers who are preparing for the solution. Details should provide best practices as identified by customers and then validated by the product team to ensure recommendations are future facing and considered stable.
 
 © 2015 Microsoft Corporation. All rights reserved. This document is provided "as-is." Information and views expressed in this document, including URL and other Internet Web site references, may change without notice. You bear the risk of using it.
 Some examples are for illustration only and are fictitious. No real association is intended or inferred.
@@ -85,12 +85,11 @@ Hardware requirements
 
 Pull server deployments are supported on both physical and virtual servers. The sizing requirements for pull server align with the requirements for Windows Server 2012 R2.
 
-CPU: 1.4 GHz 64-bit processor
-Memory: 512 MB
-Disk Space: 32 GB
-Network: Gigabit Ethernet Adapter
+CPU: 1.4 GHz 64-bit processor  
+Memory: 512 MB  
+Disk Space: 32 GB  
+Network: Gigabit Ethernet Adapter  
 
-**Hardware process planning**
 |Planning task|
 |-|
 |Will you deploy on physical hardware or on a virtualization platform?|
