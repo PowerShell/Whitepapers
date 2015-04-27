@@ -242,7 +242,6 @@ The best method to deploy a DSC pull server is to use a DSC configuration script
 Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server to be EN-US locale.
 
 **Basic configuration for Windows Server 2012**
-<script src="https://gist.github.com/mgreenegit/66b175dd8194f2b69185.js"></script>
 ```
 # This is a very basic Configuration to deploy a pull server instance in a lab environment on Windows Server 2012.
 
