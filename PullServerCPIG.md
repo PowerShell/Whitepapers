@@ -210,7 +210,7 @@ Planning for configuration GUIDs is worth additional attention when thinking thr
 The GUID is something that should be considered sensitive data because it could be leveraged by someone with malicious intent to gain intelligence about how servers are deployed and configured in your environment. For more information, see [Securely allocating GUIDs in PowerShell Desired State Configuration Pull Mode](http://blogs.msdn.com/b/powershell/archive/2014/12/31/securely-allocating-guids-in-powershell-desired-state-configuration-pull-mode.aspx).
 
 |Planning task|
-|-|
+|---|
 |Who will be responsible for copying configurations in to the pull server folder when they are ready?|
 |If Configurations are authored by an application team, what will the process be to hand them off?|
 |Will you leverage a repository to store configurations as they are being authored, across teams?|
