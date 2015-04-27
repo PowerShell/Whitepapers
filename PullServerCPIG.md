@@ -174,3 +174,50 @@ In a highly available scenario where multiple servers are configured as pull ser
 |Who will handle the request for a new highly available share?|
 |What is the average turnaround time for a highly available share to be available?|
 |What information will the teams responsible for storage and/or clustering need?|
+
+Staging configurations and modules on the pull server
+-----------------------------------------------------
+
+As part of configuration planning, you will need to think about which DSC modules and configurations will be hosted by the pull server. For the purpose of configuration planning it is important to have a basic understanding of how to prepare and deploy content to a pull server. 
+
+In the future, this section will be expanded and included in an Operations Guide for DSC Pull Server.  The guide will discuss the day to day process for managing modules and configurations over time with automation. 
+
+**DSC modules**
+Clients that request a configuration will need the required DSC modules. A functionality of the pull server is to automate distribution on demand of DSC modules to clients. If you are deploying a pull server for the first time, perhaps as a lab or proof of concept, you are likely going to depend on DSC modules that are available from public repositories such as the PowerShell Gallery or the PowerShell.org GitHub repositories for DSC modules.
+
+It is critical to remember that even for trusted online sources such as the PowerShell Gallery, any module that is downloaded from a public repository should be reviewed by someone with PowerShell experience and knowledge of the environment where the modules will be used prior to being used in production. While completing this task it is a good time to check for any additional payload in the module that can be removed such as documentation and example scripts. This will reduce the network bandwidth per client in their first request, when modules will be downloaded over the network from server to client.
+
+Each module must be packaged in a specific format, a ZIP file named ModuleName_Version.zip that contains the module payload. After the file is copied to the server a checksum file must be created. When clients connect to the server, the checksum is used to verify the content of the DSC module has not changed since it was published.
+
+    New-DscCheckSum -ConfigurationPath .\ -OutPath .\
+
+|Planning task|
+|-|
+|If you are planning a test or lab environment which scenarios are key to validate?|
+|Are there publicly available modules that contain resources to cover everything you need or will you need to author your own resources?|
+|Will your environment have Internet access to retrieve public modules?|
+|Who will be responsible for reviewing DSC modules?|
+|If you are planning a production environment what will you use as a local repository for storing DSC modules?|
+|Will a central team accept DSC modules from application teams? What will the process be?|
+|Will you automate packaging, copying, and creating a checksum for production-ready DSC modules to the server, from your source repo?|
+|Will your team be responsible for managing the automation platform as well?|
+
+**DSC configurations**
+The purpose of a pull server is to provide a centralized mechanism for distributing DSC configurations to client nodes. The configurations are stored on the server as MOF documents. Each document will be named with a unique GUID. When clients are configured to connect with a pull server, they are also given the GUID for the configuration they should request. This system of referencing configurations by GUID guarantees global uniqueness and is flexible such that a configuration can be applied with granularity per node, or as a role configuration that spans many servers that should have identical configurations.
+
+**GUIDs**
+Planning for configuration GUIDs is worth additional attention when thinking through a pull server deployment. There is no specific requirement for how to handle GUIDs and the process is likely to be unique for each environment. The process can range from simple to complex: a centrally stored CSV file, a simple SQL table, a CMDB, or a complex solution requiring integration with another tool or software solution. There are two general approaches:
+
+ - **Assigning GUIDs per server** — Provides a measure of assurance that every server configuration is controlled individually. This provides a level of precision around updates and can work well in environments with few servers.
+ - **Assigning GUIDs per server role** — All servers that perform the same function, such as web servers, use the same GUID to reference the required configuration data.  Be aware that if many servers share the same GUID, all of them would be updated simultaneously when the configuration changes.
+
+The GUID is something that should be considered sensitive data because it could be leveraged by someone with malicious intent to gain intelligence about how servers are deployed and configured in your environment. For more information, see [Securely allocating GUIDs in PowerShell Desired State Configuration Pull Mode](http://blogs.msdn.com/b/powershell/archive/2014/12/31/securely-allocating-guids-in-powershell-desired-state-configuration-pull-mode.aspx).
+
+|Planning task|
+|-|
+|Who will be responsible for copying configurations in to the pull server folder when they are ready?|
+|If Configurations are authored by an application team, what will the process be to hand them off?|
+|Will you leverage a repository to store configurations as they are being authored, across teams?|
+|Will you automate the process of copying configurations to the server and creating a checksum when they are ready?|
+|How will you map GUIDs to servers or roles, and where will this be stored?|
+|What will you use as a process to configure client machines, and how will it integrate with your process for creating and storing Configuration GUIDs?|
