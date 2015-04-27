@@ -455,6 +455,7 @@ Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server 
     
     # .\Script.ps1 -ServerName web1 -domainname 'test.pha' -carootname 'test-dc01-ca' -caserverfqdn 'dc01.test.pha' -certsubject 'CN=service.test.pha' -smbshare '\\sofs1.test.pha\share' 
 
+
 **Verify pull server functionality**
 
     # This function is meant to simplify a check against a DSC pull server. If you do not use the default service URL, you will need to adjust accordingly.
@@ -469,9 +470,8 @@ Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server 
     StatusReport
     Node
     
-**Pull server client example scripts**
 
-*Configure clients*
+**Configure clients**
 
     Configuration PullClient {
      param(
