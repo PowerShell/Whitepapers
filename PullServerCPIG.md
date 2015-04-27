@@ -123,10 +123,13 @@ For more information, see [Configuring DNS Round Robin in Windows Server](https:
 
 Public Key Infrastructure
 -------------------------
-Most organizations today require that network traffic, especially traffic that includes such sensitive data as how servers are configured, must be validated and/or encrypted during transit. While it is possible to deploy a pull server using HTTP which facilitates client requests in clear text, it is a best practice to secure traffic using HTTPS. The service can be configured to use HTTPS using a set of parameters in the DSC resource **xPSDesiredStateConfiguration**.
+Most organizations today require that network traffic, especially traffic that includes such sensitive data as how servers are configured, must be validated and/or encrypted during transit. While it is possible to deploy a pull server using HTTP which facilitates client requests in clear text, it is a best practice to secure traffic using HTTPS. The service can be configured to use HTTPS using a set of parameters in the DSC resource
+**xPSDesiredStateConfiguration**.
+
 The certificate requirements to secure HTTPS traffic for pull server are not different than securing any other HTTPS web site. The **Web Server** template in a Windows Server Certificate Services satisfies the required capabilities.
-|Planning task|
-|-|
+
+Planning task
+|---|
 |If certificate requests are not automated, who will you need to contact to requests a certificate?|
 |What is the average turnaround for the request?|
 |How will the certificate file be transferred to you?|
