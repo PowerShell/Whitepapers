@@ -25,15 +25,15 @@ The two major sections of this document:
  - Configuration Planning
  - Installation Guide
  
-**Versions of the Windows Management Framework**
+**Versions of the Windows Management Framework**  
 The information in this document is intended to apply to Windows Management Framework 5.0. While WMF 5.0 is not required for deploying and operating a pull server, version 5.0 is the focus of this document.
 
-**Windows PowerShell Desired State Configuration**
+**Windows PowerShell Desired State Configuration**  
 Desired State Configuration (DSC) is a management platform that enables deploying and managing configuration data by using an industry syntax named the Managed Object Format (MOF) to describe the Common Information Model (CIM). An open source project, Open Management Infrastructure (OMI), exists to further development of these standards across platforms including Linux and network hardware operating systems. For more information, see the [DMTF page linking to MOF specifications](http://dmtf.org/standards/cim) , and [OMI Documents and Source](https://collaboration.opengroup.org/omi/documents.php).
 
 Windows PowerShell provides a set of language extensions for Desired State Configuration that you can use to create and manage declarative configurations.
 
-**Pull server role**
+**Pull server role**  
 A pull server provides a centralized service to store configurations that will be accessible to target nodes.
  
 The pull server role can be deployed as either a Web Server instance or an SMB file share. The web server capability includes an OData interface and can optionally include capabilities for target nodes to report back confirmation of success or failure as configurations are applied. This functionality is useful in environments where there are a large number of target nodes. After configuring a target node (also referred to as a client) to point to the pull server the latest configuration data and any required scripts are downloaded and applied. This can happen as a one-time deployment or as a re-occurring job which also makes the pull server an important asset for managing change at scale. For more information, see [Windows PowerShell Desired State Configuration Pull Servers](https://technet.microsoft.com/en-us/library/dn249913.aspx) and [Push and Pull Configuration Modes](https://technet.microsoft.com/en-us/library/dn249913.aspx).
