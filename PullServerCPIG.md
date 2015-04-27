@@ -63,7 +63,7 @@ A pull server deployment can be simplified by provisioning the service using a D
 
 Use the **Install-Module** cmdlet from the **PowerShellGet** module.
 
- ```Install-Module xPSDesiredStateConfiguration
+    Install-Module xPSDesiredStateConfiguration
 
 The **PowerShellGet** module will download the module to 
 
@@ -225,12 +225,12 @@ Installation Guide
 **Prerequisites**
 To verify the version of PowerShell on your server use the following command.
 
-```$PSVersionTable.PSVersion
+    $PSVersionTable.PSVersion
 
 If possible, upgrade to the latest version of Windows Management Framework.
 Next, download the xPsDesiredStateConfiguration module using the following command.
 
-```Install-Module xPSDesiredStateConfiguration
+    Install-Module xPSDesiredStateConfiguration
 
 The command will ask for your approval before downloading the module.
 
