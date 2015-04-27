@@ -105,7 +105,7 @@ A DNS CNAME allows you to create an alias to refer to your host (A) record. The 
 
 When choosing a name for the DNS record, keep the solution architecture in mind. If using load balancing, the certificate used to secure traffic over HTTPS will need to share the same name as the DNS record. Similarly, if using a highly available file share the virtual name for the cluster would be used.
 |Scenario |Best Practice|
-|-|-|
+|---|---|
 |Test Environment |Reproduce the planned production environment, if possible. A server hostname is suitable for simple configurations. If DNS is not available, an IP address may be used in lieu of a hostname.|
 |Single Node Deployment |Create a DNS CNAME record that points to the server hostname.|
 |Highly Available Deployment |If clients will connect through a load balancing solution, create a hostname for the virtual IP and a CNAME record that references that hostname. If DNS round robin will be used to distribute client requests across pull servers, you must configure the name records to include the host names of all deployed pull server instances.|
@@ -113,7 +113,7 @@ When choosing a name for the DNS record, keep the solution architecture in mind.
 For more information, see [Configuring DNS Round Robin in Windows Server](https://technet.microsoft.com/en-us/library/cc787484(v=ws.10).aspx).
 
 |Planning task|
-|-|
+|---|
 |Do you know who to contact to have DNS records created and changed?|
 |What is the average turnaround for a request for a DNS record?|
 |Do you need to request static Hostname (A) records for servers?|
