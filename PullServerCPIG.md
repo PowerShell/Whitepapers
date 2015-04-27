@@ -43,5 +43,44 @@ A pull server provides a centralized service to store configurations that will b
  
 The pull server role can be deployed as either a Web Server instance or an SMB file share. The web server capability includes an OData interface and can optionally include capabilities for target nodes to report back confirmation of success or failure as configurations are applied. This functionality is useful in environments where there are a large number of target nodes. After configuring a target node (also referred to as a client) to point to the pull server the latest configuration data and any required scripts are downloaded and applied. This can happen as a one-time deployment or as a re-occurring job which also makes the pull server an important asset for managing change at scale. For more information, see [Windows PowerShell Desired State Configuration Pull Servers](https://technet.microsoft.com/en-us/library/dn249913.aspx) and [Push and Pull Configuration Modes](https://technet.microsoft.com/en-us/library/dn249913.aspx).
 
+Configuration planning
+----------------------
+
+For any enterprise software deployment there is information that can be collected in advance to help plan for the correct architecture and to be prepared for the steps required to complete the deployment. The following sections provide information regarding how to prepare and the organizational connections that will likely need to happen in advance.
+
+Software requirements
+---------------------
+
+Deployment of a pull server requires the DSC Service feature of Windows Server. This feature was introduced in Windows Server 2012, and has been updated through ongoing releases of Windows Management Framework (WMF).
+
+Software downloads
+------------------
+
+In addition to installing the latest content from Windows Update, there are two downloads considered best practice to deploy a DSC pull server: The latest version of Windows Management Framework, and a DSC module to automate pull server provisioning.
+
+WMF
+---
+
+Windows Server 2012 R2 includes a feature named the DSC Service. The DSC Service feature provides the pull server functionality, including the binaries that support the OData endpoint. WMF is included in Windows Server and is updated on an agile cadence between Windows Server releases. [New versions of WMF 5.0](http://aka.ms/wmf5latest)  can include updates to the DSC Service feature. For this reason, it is a best practice to download the latest release of WMF and to review the release notes to determine if the release includes an update to the DSC service feature. You should also review the section of the release notes that indicates whether the design status for an update or scenario is listed as stable or experimental . To allow for an agile release cycle, individual features can be declared stable, which indicates the feature is ready to be used in a production environment even while WMF is released in preview.
+Other features that have historically been updated by WMF releases (see the WMF Release Notes for further detail):
+
+ - Windows PowerShell Windows PowerShell Integrated Scripting
+ - Environment (ISE) Windows PowerShell Web Services (Management OData
+ - IIS Extension)  Windows PowerShell Desired State Configuration (DSC)
+ - Windows Remote Management (WinRM) Windows Management Instrumentation (WMI)
+
+DSC resource
+------------
+
+A pull server deployment can be simplified by provisioning the service using a DSC configuration script. This document includes configuration scripts that can be used to deploy a production ready server node. To use the configuration scripts, a DSC module is required that is not included in Windows Server. The required module name is **xPSDesiredStateConfiguration**, which includes the DSC resource **xDscWebService**. The xPSDesiredStateConfiguration module can be downloaded [here](https://gallery.technet.microsoft.com/xPSDesiredStateConfiguratio-417dc71d).
+
+Use the **Install-Module** cmdlet from the **PowerShellGet** module.
+
+    Install-Module xPSDesiredStateConfiguration
+
+The **PowerShellGet** module will download the module to 
+
+> C:\Program Files\Windows PowerShell\Modules.
+
 
 
