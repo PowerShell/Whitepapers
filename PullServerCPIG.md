@@ -250,7 +250,8 @@ The best method to deploy a DSC pull server is to use a DSC configuration script
 
 Note:  Currently the xPSDesiredStateConfiguation DSC module requires the server to be EN-US locale.
 
-**Basic configuration for Windows Server 2012**
+Basic configuration for Windows Server 2012
+-------------------------------------------
 ```powershell
 # This is a very basic Configuration to deploy a pull server instance in a lab environment on Windows Server 2012.
 
@@ -282,7 +283,8 @@ PullServer -OutputPath 'C:\PullServerConfig\'
 Start-DscConfiguration -Wait -Force -Verbose -Path 'C:\PullServerConfig\'
 ```
 
-**Advanced configuration for Windows Server 2012 R2**
+Advanced configuration for Windows Server 2012 R2
+-------------------------------------------------
 ```powershell
 # This is an advanced Configuration example for Pull Server production deployments on Windows Server 2012 R2.
 # Many of the features demonstrated are optional and provided to demonstrate how to adapt the Configuration for multiple scenarios
@@ -466,7 +468,8 @@ Start-DscConfiguration -Wait -Force -Verbose -Path 'C:\PullServerConfig\'
 ```
 
 
-**Verify pull server functionality**
+Verify pull server functionality
+--------------------------------
 ```powershell
 # This function is meant to simplify a check against a DSC pull server. If you do not use the default service URL, you will need to adjust accordingly.
 function Verify-DSCPullServer ($fqdn) {
@@ -481,7 +484,8 @@ StatusReport
 Node
 ```
 
-**Configure clients**
+Configure clients
+-----------------
 ```powershell
 Configuration PullClient {
     param(
