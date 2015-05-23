@@ -8,7 +8,7 @@ http://blogs.msdn.com/powershell/
 and
 http://aka.ms/buildingclouds
 
-Instructions for using JEA with WMF5 have been posted in the PowerSHell blog.
+Instructions for using JEA with WMF5 have been posted in the PowerShell blog.
 http://blogs.msdn.com/b/powershell/archive/2015/05/14/update-jea-for-the-april-wmf-5-0-preview.aspx
  
 Introduction
