@@ -10,6 +10,8 @@ http://aka.ms/buildingclouds
 
 Instructions for using JEA with WMF5 have been posted in the PowerShell blog.
 http://blogs.msdn.com/b/powershell/archive/2015/05/14/update-jea-for-the-april-wmf-5-0-preview.aspx
+
+The authoritative location for the JEA Whitepaper is http://aka.ms/jea.
  
 Introduction
 ------------
