@@ -37,7 +37,7 @@ Just Enough Administration (JEA) overcomes many of these challenges through the 
  - Users perform these tasks without being given administrator rights on the server.
  - The tasks that users are allowed to perform, and the user access to the servers, are defined and managed from a central configuration server (by using Windows PowerShell Desired State Configuration). 
  - Detailed logging occurs, so that access and details of changes within an environment are always documented.
- 
+ 
 Solution Overview
 =================
 
@@ -135,12 +135,12 @@ A JEA toolkit serves as a definition of the commands that should be available fo
 The toolkit file is simply a flat text file that contains comma-separated values, and that uses a schema that is expected by the JEA initialization script.  A simple method for editing the file is to open it in Microsoft Office Excel, add contents to each cell, and then save it as a CSV file type when finished.
 
 The schema is as follows:
-ModuleName | Name | Parameter | ValidateSet | ValidatePattern | ParameterType
+| ModuleName | Name | Parameter | ValidateSet | ValidatePattern | ParameterType |
 |:---|:---|:---|:---|:---|:---|
-The name of the module whose cmdlets should be available. | The cmdlet that should be available in the session. | Specifies a parameter that should be allowed.  Repeat one row per parameter.
+| The name of the module whose cmdlets should be available. | The cmdlet that should be available in the session. | Specifies a parameter that should be allowed.  Repeat one row per parameter.
 Default = blank (all) | If you want a parameter to accept only specific values, optionally list a semicolon-separated validation set to restrict a set of arguments.
 Default = blank (all) | If you want a parameter to accept only values in specific formats, as an alternative to ValidateSet, you can validate a Regular Expression pattern for arguments.
-Default = blank (all) | If you want a parameter to accept only specific types of data, such as strings, you can set the Type to ensure only valid data is passed.
+Default = blank (all) | If you want a parameter to accept only specific types of data, such as strings, you can set the Type to ensure only valid data is passed. |
 
 An example toolkit configuration is provided in the How-To section of this document.
 
@@ -149,10 +149,12 @@ When JEA endpoints are created by the DSC configuration, the following set of fu
     EXIT-PSSESSION
     FORMAT-LIST
     FORMAT-TABLE
-    GET-COMMAND	GET-FORMATDATA
+    GET-COMMAND
+    GET-FORMATDATA
     GET-HELP
     GET-MODULE
-    MEASURE-OBJECT	OUT-DEFAULT
+    MEASURE-OBJECT
+    OUT-DEFAULT
     PROMPT
     SELECT-OBJECT
     TABEXPANSION2
@@ -206,16 +208,7 @@ After the PowerShellGet module is installed on the node, the command to load the
 
     Install-Module xJEA
 
-Install by using NuGet
-----------------------
-
-When installing xJEA on an endpoint server by using an automated method such as Windows PowerShell DSC resources, Microsoft Azure VM Agent Custom Script Extension, or Windows Azure Pack VMRole Resource Extension, you can include a two-line Windows PowerShell script, and the process finishes without user interaction.
-
-    Invoke-WebRequest -Uri "http://nuget.org/nuget.exe" -OutFile "$env:TEMP\NuGet.exe"
-
-    &"$env:TEMP\NuGet.exe" install xJea -NoCache -Source ‘http://go.microsoft.com/fwlink/?LinkID=397631&clcid=0x409’ -ExcludeVersion -PackageSaveMode "nuspec" -OutputDirectory "$env:ProgramFiles\WindowsPowerShell\Modules"
-
-Using a Windows a PowerShell DSC pull server
+Using a Windows a PowerShell DSC Pull Server
 --------------------------------------------
 
 A server configured to act as a DSC “pull server” acts as a centralized point for storing DSC resources and MOF files created by DSC configuration scripts, allowing servers managed by DSC to be deployed and maintained in an automated fashion.
@@ -234,7 +227,7 @@ Apply the DSC configuration
 
 After the xJEA resource has been copied to the local computer, the second step is to create the JEA toolkits and endpoints.  Both are defined in declarative language by using a DSC configuration.  To make it easy for testing, an example configuration script is included with the download for the toolkit.  The critical components of the configuration script are the helper functions, the JEAToolKit resource, and the JEAEndPoint resource.
 
-The basic sections of a DSC configuration for JEA include:
+The basic sections of a DSC configuration for JEA include a JEAToolkit and JEAEndPoint.
 
 JEAToolkit
 ----------
