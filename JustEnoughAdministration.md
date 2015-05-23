@@ -29,8 +29,7 @@ For example:
  - A service provider who is responsible for implementing changes on behalf of a tenant.  This can be a difficult model to properly implement without exposing access to tenant data.  An example would be an operator who should complete tasks–such as restarting a service during an outage–or provision an additional capability, but should not be able to log on to the tenant environment at all.
 Today, it is common practice in each of these cases to grant users excessive administrative rights to perform their jobs. This results in severe consequences when accounts are breached or misused.
 
-Just Enough Administration
---------------------------
+**Just Enough Administration**
 
 Just Enough Administration (JEA) overcomes many of these challenges through the following benefits:
  - Users can only perform tasks that they are authorized to do as part of their role (using Windows PowerShell constrained runspaces).
@@ -46,14 +45,16 @@ Just Enough Administration (JEA) is delivered using built-in capabilities in the
 JEA is currently delivered as a DSC Resource Kit module (xJEA), and requires the Windows Management Framework (WMF) 5.0 Preview, which only runs on the newest versions of Windows client and server, Windows 8.1 and Windows Server 2012 R2.  This Preview release will evolve rapidly, based upon community feedback; no backward compatibility is guaranteed.  The JEA toolkit will be made available on earlier releases of Windows concurrent with the availability of WMF 5.0 on those platforms.
 
 The automation for JEA is delivered by Windows PowerShell Desired State Configuration (DSC).  The core components of a JEA environment include:
- - JEA toolkit configuration – this represents a set of tasks (for example, auditor tasks, SQL Server administrator tasks) that a user can perform on the server. This is configured through the set of Windows PowerShell cmdlets and parameters that the user can run to accomplish that task. For example, an “Auditor” JEA Toolkit includes the Get-Events and Get-Logs cmdlets. A “SQL admin” JEA Toolkit will include the Stop-Service SQL” and “Start-service SQL” cmdlets and parameters
+ - JEA toolkit configuration – this represents a set of tasks (for example, auditor tasks, SQL Server administrator tasks) that a user can perform on the server. This is configured through the set of Windows PowerShell cmdlets and parameters that the user can run to accomplish that task. For example, an “Auditor” JEA Toolkit includes the **Get-Events** and **Get-Logs** cmdlets. A “SQL admin” JEA Toolkit will include the Stop-Service SQL” and “Start-service SQL” cmdlets and parameters
  - JEA endpoint configuration – for each set of servers, a JEA endpoint represents an administration point for users on Windows Server. A JEA endpoint is composed of:
   - One or more JEA toolkits (for example, the “Auditor” toolkit)
   - An Access Control List (ACL) representing the users that can access the JEA endpoint (such as the Auditors_Security_Group) – These users should not be administrators on the server.
   
 For employees performing their roles (such as Auditor), JEA is exposed as a Windows PowerShell session endpoint. Once connected, the JEA-based environment functions as a normal Windows PowerShell experience, with only specific commands visible, and only specific arguments or parameters accepted.  Behind the scenes, on the server, the cmdlets are running in the context of a hidden local administrator account that is specifically configured for that JEA endpoint.
  
-If the employee (such as an Auditor) attempts to run an unauthorized command such as cmd, they get an error message, in addition to activity being logged.  This creates a “blast container” around the administrator, where even if malicious intent is present, the employees have limited impact. In addition, if the server is breached (such as by malware), no administrator credentials can be harvested to move laterally to other servers, limiting the extent of the breach to that server.
+If the employee (such as an Auditor) attempts to run an unauthorized command such as **cmd**, they get an error message, in addition to activity being logged.  This creates a “blast container” around the administrator, where even if malicious intent is present, the employees have limited impact. In addition, if the server is breached (such as by malware), no administrator credentials can be harvested to move laterally to other servers, limiting the extent of the breach to that server.
+
+![Example01](/JustEnoughAdministration/Example01.png)
 
 Consider an administrator who is tasked with deploying a new web-based application that includes privileged Human Resources information, such as salaries for company executives.  When the administrator connects to a JEA endpoint to complete work, he or she would be presented with options such as:
  - New-WebApplication
@@ -93,7 +94,7 @@ Windows PowerShell Desired State Configuration (DSC) provides a method of using 
 
 To take advantage of a resource after it has been copied to a device, a script is run to define a configuration, known as the configuration script.  The configuration script is organized into human-readable sections, each representing a set of declarative statements that are used as parameters when you are running functions from each resource.  The information is stored as a Managed Object Framework (MOF) file in Windows, and then applied to the device.
 
-In the following example, the Configuration section defines a configuration that includes installation of the Hyper-V role on Windows Server.  Next, the configuration is run by calling Example to create a MOF file.  Finally, Start-DSCConfiguration tells Windows to apply the configuration with verbose output, and to wait for all changes to complete before exiting.
+In the following example, the **Configuration** section defines a configuration that includes installation of the Hyper-V role on Windows Server.  Next, the configuration is run by calling Example to create a MOF file.  Finally, **Start-DSCConfiguration** tells Windows to apply the configuration with verbose output, and to wait for all changes to complete before exiting.
 
 *Configuration Example*
 
@@ -112,35 +113,33 @@ In the following example, the Configuration section defines a configuration that
     
     Start-DscConfiguration -wait -force -verbose -path .\Example
 
-For JEA, DSC is used for installation and configuration of JEA toolkits and endpoints on a server by using the same approach.  Just as we see WindowsFeature Hyper-V in the example, we would expect to see JEAEndPoint Hyper-V if we are constructing an endpoint where an operator would performance maintenance on a Hyper-V server.
+For JEA, DSC is used for installation and configuration of JEA toolkits and endpoints on a server by using the same approach.  Just as we see **WindowsFeature Hyper-V** in the example, we would expect to see **JEAEndPoint Hyper-V** if we are constructing an endpoint where an operator would performance maintenance on a Hyper-V server.
  
-DSC has two modes – Push, where an administrator remotely configures servers (known as “target nodes”) by specifying the ComputerName parameter when running Start-DSCConfiguration from a local computer, and Pull, where a target node is configured to periodically  retrieve the configuration from a central DSC server (the “pull server”). Both models enable deployment at scan, and can be used for applying JEA endpoint configurations to servers.
+DSC has two modes – Push, where an administrator remotely configures servers (known as “target nodes”) by specifying the **ComputerName** parameter when running **Start-DSCConfiguration** from a local computer, and Pull, where a target node is configured to periodically  retrieve the configuration from a central DSC server (the “pull server”). Both models enable deployment at scan, and can be used for applying JEA endpoint configurations to servers.
  
 Windows PowerShell Constrained Endpoints
 ----------------------------------------
 
-When a user opens Windows PowerShell by using the traditional method of clicking on the desktop icon, all modules and snap-ins available on that machine are visible.  This can be demonstrated with the Get-Command cmdlet.  A user opening a Windows PowerShell 4.0 prompt is greeted with over a thousand built-in commands.
+When a user opens Windows PowerShell by using the traditional method of clicking on the desktop icon, all modules and snap-ins available on that machine are visible.  This can be demonstrated with the **Get-Command** cmdlet.  A user opening a Windows PowerShell 4.0 prompt is greeted with over a thousand built-in commands.
 
 The concept of a session was introduced with Windows PowerShell remoting as the WinRM runspace to which a remote user connects.  Sessions are not limited to remote connections.  A local user can also create and enter a Windows PowerShell session.  The remoting context leads to sessions being referred to as endpoints.
 
-When a session is created, it is possible to apply restrictions.  The basic method for restricting a session is through the use of Windows PowerShell session configuration files, or Windows PowerShell session startup scripts.  Startup scripts are the most flexible, and allow for advanced configurations through the use of the Windows PowerShell script language.  These capabilities include strict limits on which commands should be available, including Language Modes as described in the Appendix of this document.
+When a session is created, it is possible to apply restrictions.  The basic method for restricting a session is through the use of Windows PowerShell session configuration files, or Windows PowerShell session startup scripts.  Startup scripts are the most flexible, and allow for advanced configurations through the use of the Windows PowerShell script language.  These capabilities include strict limits on which commands should be available, including *Language Modes* as described in the Appendix of this document.
 
 For JEA, Windows PowerShell constrained endpoints provide a remotely-accessible Windows PowerShell session with defined characteristics that limit what functionality is available to the user.  An example endpoint configuration is provided in the How-To section of this document.
 
 JEA Toolkit
 -----------
 
-A JEA toolkit serves as a definition of the commands that should be available for a JEA endpoint.  The definition can be set directly within a configuration script by using a string value, or through a CSV (comma separated values) file that is implemented in the configuration script by running the Get-Content cmdlet.  The value of authoring toolkits by using a CSV file is to simplify the experience into one that can be driven by any text editor or spreadsheet application.
+A JEA toolkit serves as a definition of the commands that should be available for a JEA endpoint.  The definition can be set directly within a configuration script by using a string value, or through a CSV (comma separated values) file that is implemented in the configuration script by running the **Get-Content** cmdlet.  The value of authoring toolkits by using a CSV file is to simplify the experience into one that can be driven by any text editor or spreadsheet application.
 
 The toolkit file is simply a flat text file that contains comma-separated values, and that uses a schema that is expected by the JEA initialization script.  A simple method for editing the file is to open it in Microsoft Office Excel, add contents to each cell, and then save it as a CSV file type when finished.
 
 The schema is as follows:
-| ModuleName | Name | Parameter | ValidateSet | ValidatePattern | ParameterType |
-|:---|:---|:---|:---|:---|:---|
-| The name of the module whose cmdlets should be available. | The cmdlet that should be available in the session. | Specifies a parameter that should be allowed.  Repeat one row per parameter.
-Default = blank (all) | If you want a parameter to accept only specific values, optionally list a semicolon-separated validation set to restrict a set of arguments.
-Default = blank (all) | If you want a parameter to accept only values in specific formats, as an alternative to ValidateSet, you can validate a Regular Expression pattern for arguments.
-Default = blank (all) | If you want a parameter to accept only specific types of data, such as strings, you can set the Type to ensure only valid data is passed. |
+
+| ModuleName | Name | Parameter | ValidateSet | ValidatePattern | ParameterType
+|:---|:---|:---|:---|:---|:---
+| The name of the module whose cmdlets should be available. | The cmdlet that should be available in the session. | Specifies a parameter that should be allowed.  Repeat one row per parameter.  Default = blank (all) | If you want a parameter to accept only specific values, optionally list a semicolon-separated validation set to restrict a set of arguments.  Default = blank (all) | If you want a parameter to accept only values in specific formats, as an alternative to ValidateSet, you can validate a Regular Expression pattern for arguments.  Default = blank (all) | If you want a parameter to accept only specific types of data, such as strings, you can set the Type to ensure only valid data is passed.
 
 An example toolkit configuration is provided in the How-To section of this document.
 
@@ -173,7 +172,7 @@ One consequence of the “Run as” operation is that the user who is connected 
 Logging and Reporting
 ---------------------
 
-All operations that are performed through the JEA endpoint are recorded in the Windows Event Logs; all commands run in a JEA session are logged to the Microsoft-Windows-PowerShell/Operational channel.  When an end user logs on to a Windows PowerShell session, the process ID, RunSpaceID, and information from WinRM are written as Windows events.  Because events generated by work in JEA are recorded as actions performed by the JEA account, to trace them to the user who actually performed the work, a record of the user and what runspaceID is created for that user is logged in $env:ProgramFiles\Jea\Activity\Activity.csv.  Additionally, information about the WinRM session is written to the Windows Event Log.
+All operations that are performed through the JEA endpoint are recorded in the Windows Event Logs; all commands run in a JEA session are logged to the *Microsoft-Windows-PowerShell/Operational* channel.  When an end user logs on to a Windows PowerShell session, the process ID, RunSpaceID, and information from WinRM are written as Windows events.  Because events generated by work in JEA are recorded as actions performed by the JEA account, to trace them to the user who actually performed the work, a record of the user and what runspaceID is created for that user is logged in $env:ProgramFiles\Jea\Activity\Activity.csv.  Additionally, information about the WinRM session is written to the Windows Event Log.
 
 In a centrally-managed environment, these event logs provide a method of data correlation to determine who accessed the environment, when, and what changes were made.  To form a complete picture, the data correlation must include details about the actions taken in the context of the JSA user account, and the logged-on operator.
  
@@ -232,22 +231,23 @@ The basic sections of a DSC configuration for JEA include a JEAToolkit and JEAEn
 JEAToolkit
 ----------
 
-The JEAToolkit section of a DSC configuration script defines what commands should be available inside a JEA session.  The properties include Name, CommandSpecs, Applications, and Ensure.  The information provided in CommandSpecs is parsed as comma-separated values, which makes content creation very simple in any text editor or spreadsheet application.
+The JEAToolkit section of a DSC configuration script defines what commands should be available inside a JEA session.  The properties include **Name**, **CommandSpecs**, **Applications**, and **Ensure**.  The information provided in **CommandSpecs** is parsed as comma-separated values, which makes content creation very simple in any text editor or spreadsheet application.
 Importing the information into a configuration script can be done either directly by using a here-string value, or by importing information from a stored .csv file.
 
-To create a new toolkit – create a new JEAToolkit configuration in the script and set the properties, as in the example below.  In this example, the toolkit is created by using a CSV file for ease of authoring.  The result allows a connected user to run Get-EventLog, Get-Content with only the -Name parameter, ipconfig, and nothing else.
+To create a new toolkit – create a new **JEAToolkit** configuration in the script and set the properties, as in the example below.  In this example, the toolkit is created by using a CSV file for ease of authoring.  The result allows a connected user to run Get-EventLog, **Get-Content** with only the **-Name** parameter, **ipconfig**, and nothing else.
 
 *JeaToolkit ExampleToolkit*
+
     {
         Name = "Auditor toolkit"
         CommandSpecs = Get-Content “C:\AuditorToolkit\Toolkit.csv” –Delimiter “NoSuch”
         applications = "ipconfig"
     } 
 
-The preceding script loads the contents of the specified CSV file. You can create the CSV file by using Microsoft Office Excel or any text editor.  An example of the content is shown below.  Once you have created this table in Excel, click Save As to change the file type to CSV (comma deliminted) (*.csv).
+The preceding script loads the contents of the specified CSV file. You can create the CSV file by using Microsoft Office Excel or any text editor.  An example of the content is shown below.  Once you have created this table in Excel, click **Save As** to change the file type to CSV (comma deliminted) (*.csv).
 
-Module | Name | Parameter | ValidateSet | ValidatePattern
-|:---|:---|:---|:---|:---|
+| Module | Name | Parameter | ValidateSet | ValidatePattern
+|:---|:---|:---|:---|:---
 | | Get-EventLog | -LogName | Application | |
 | |	Get-Content | -Path | | C:\logs*.txt |
 
@@ -256,18 +256,18 @@ To create additional toolkits in the same configuration, repeat this section usi
 JEAEndPoint
 -----------
 
-The JEAEndPoint section of a DSC configuration script defines the metadata properties for the session that will be created.  The properties include Name, Toolkits, SecurityDescriptorSddl, Group, CleanAll, and Ensure.  The table below includes a definition for each property.
+The **JEAEndPoint** section of a DSC configuration script defines the metadata properties for the session that will be created.  The properties include **Name**, **Toolkits**, **SecurityDescriptorSddl**, **Group**, **CleanAll**, and **Ensure**.  The table below includes a definition for each property.
 
-Property | Description
+| Property | Description
 |:---|:---|
 Ensure | Defines whether the endpoint should be created or removed.
 Name | Sets a name for the registered endpoint.  This is used by operators to select the endpoint to which they should connect.
 Toolkits | The JEA toolkits that should be available from this endpoint.
 SecurityDescriptorSddl | An SDDL that defines access for the session.
-Group | The local user group of which the account created to host the session should be a member.  If not provided, defaults to Administrators.
-CleanAll | Boolean value that when set to True removes all endpoint configurations from the endpoint server.
+Group | The local user group of which the account created to host the session should be a member.  If not provided, defaults to **Administrators**.
+CleanAll | Boolean value that when set to **True** removes all endpoint configurations from the endpoint server.
   
-To create a JEA endPoint, create a JEAEndPoint configuration in the DSC configuration script, and set each of the properties.  In this example, the endpoint publishes the toolkit defined in the example above.
+To create a JEA endPoint, create a **JEAEndPoint** configuration in the DSC configuration script, and set each of the properties.  In this example, the endpoint publishes the toolkit defined in the example above.
 
       JeaEndPoint AuditorEndPoint
       {
@@ -288,8 +288,8 @@ It is also possible to define an endpoint with multiple toolkits available.
       } 
 
 To create additional endpoints in the same configuration, repeat this section by using a different name for each endpoint.
-This information is passed to the JEAEndPoint resource that creates the actual Windows PowerShell constrained endpoint.  The following changes result:
- - A local account is automatically created named JSA-<name> based on the Name property.  
+This information is passed to the **JEAEndPoint** resource that creates the actual Windows PowerShell constrained endpoint.  The following changes result:
+ - A local account is automatically created named **JSA-<name>** based on the **Name** property.  
  - A random password is generated, and the account password is reset.  
  - An initialization script is created for the session and the session is registered on the host.
    
@@ -332,9 +332,9 @@ To test a fully-functional configuration script, open the .ps1 file included in 
 How-To: Create a Custom Proxy Function
 ======================================
 
-In addition to the security benefits of JEA, it is also possible to create custom proxy functions that simplify the operator experience.  You do this by authoring a Windows PowerShell module (.psm1), loading it on the endpoint server, and then surfacing the functions by using the JEA toolkit.  As an example, rather than giving an operator access to the native Windows PowerShell cmdlet for Get-Content to read in the top 100 lines of a specific log file, you can instead surface a command with a name that is friendlier to the context of the task, such as Get-LogFile.
+In addition to the security benefits of JEA, it is also possible to create custom proxy functions that simplify the operator experience.  You do this by authoring a Windows PowerShell module (.psm1), loading it on the endpoint server, and then surfacing the functions by using the JEA toolkit.  As an example, rather than giving an operator access to the native Windows PowerShell cmdlet for **Get-Content** to read in the top 100 lines of a specific log file, you can instead surface a command with a name that is friendlier to the context of the task, such as **Get-LogFile**.
 
-In this example, the following text is saved as a .psm1 file, and then copied to the Modules folder on the endpoint server.  The file creation can also be automated by using the DSC File resource.
+In this example, the following text is saved as a .psm1 file, and then copied to the **Modules** folder on the endpoint server.  The file creation can also be automated by using the DSC **File** resource.
 
     function Get-LogFile {
         Get-Content -Path C:\Log0001.txt  | Select -first 100
@@ -342,7 +342,7 @@ In this example, the following text is saved as a .psm1 file, and then copied to
 
 Next, in the toolkit CSV file, add the following entry to make the command visible.
 
-Module | Name | Parameter | ValidateSet | ValidatePattern
+| Module | Name | Parameter | ValidateSet | ValidatePattern
 |:---|:---|:---|:---|:---|
 | | Get-LogFile | | | |			
 
@@ -353,7 +353,7 @@ In circumstances where value or pattern validation is complex, custom proxy func
 How-To: Access a JEA session
 ============================
 
-When a user wants to connect to a JEA endpoint to perform work, the process is the same as connecting to any remote Windows PowerShell session, with one difference: they must specify the configuration name.  The configuration name is the name of the JEAEndPoint that is specified in the DSC configuration script.  
+When a user wants to connect to a JEA endpoint to perform work, the process is the same as connecting to any remote Windows PowerShell session, with one difference: they must specify the configuration name.  The configuration name is the name of the **JEAEndPoint** that is specified in the DSC configuration script.  
 
 More information about Windows PowerShell remoting is available in the online documentation: http://technet.microsoft.com/library/dd347744.aspx.
 
