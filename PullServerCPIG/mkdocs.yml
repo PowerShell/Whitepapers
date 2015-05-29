@@ -1,0 +1,4 @@
+site_name: PullServerCPIG
+pages:
+- [PullServerCPIG.md, PullServerCPIG]
+theme: readthedocs

@@ -58,7 +58,7 @@ For employees performing their roles (such as Auditor), JEA is exposed as a Wind
  
 If the employee (such as an Auditor) attempts to run an unauthorized command such as **cmd**, they get an error message, in addition to activity being logged.  This creates a “blast container” around the administrator, where even if malicious intent is present, the employees have limited impact. In addition, if the server is breached (such as by malware), no administrator credentials can be harvested to move laterally to other servers, limiting the extent of the breach to that server.
 
-![Example01](/JustEnoughAdministration/Example01.png)
+![Example01](Example01.png)
 
 Consider an administrator who is tasked with deploying a new web-based application that includes privileged Human Resources information, such as salaries for company executives.  When the administrator connects to a JEA endpoint to complete work, he or she would be presented with options such as:
  - New-WebApplication
